@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "dev.fResult"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 description = "Writing Reactive Web Controllers"
 
 java {
