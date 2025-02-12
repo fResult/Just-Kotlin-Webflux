@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class JustKotlinWebfluxApplication
+class WebfluxApplication
 
 fun main(args: Array<String>) {
-	runApplication<JustKotlinWebfluxApplication>(*args)
+  runApplication<WebfluxApplication>(*args)
 }
