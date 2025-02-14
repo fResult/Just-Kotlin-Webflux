@@ -1,4 +1,4 @@
-package dev.fResult.justKotlinWebflux
+package dev.fResult.justKotlinWebflux.controllers
 
 import dev.fResult.justKotlinWebflux.entities.Employee
 import org.springframework.web.bind.annotation.*
