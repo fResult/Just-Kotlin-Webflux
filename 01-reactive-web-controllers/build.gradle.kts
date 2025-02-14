@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+  implementation(libs.spring.boot.starter.thymeleaf)
   implementation(libs.spring.boot.starter.webflux)
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
