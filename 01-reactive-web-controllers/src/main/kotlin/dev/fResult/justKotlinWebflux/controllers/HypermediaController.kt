@@ -42,4 +42,15 @@ class HypermediaController(
         .map { entityModels -> CollectionModel.of(entityModels, selfLink) }
     }
   }
+
+  @GetMapping("/employees/{id}")
+  fun employee(@PathVariable id: Long): Mono<EntityModel<Employee>> {
+    val selfLinkMono = linkTo(methodOn(this::class.java).employee(id)).withSelfRel().toMono()
+    val aggregateRootLinkMono = linkTo(methodOn(this::class.java).employees()).withRel("employees").toMono()
+    val linksMono = Mono.zip(selfLinkMono, aggregateRootLinkMono)
+
+    return linksMono.map { links ->
+      database[id]?.let { employee -> EntityModel.of(employee, links.t1, links.t2) }
+    }
+  }
 }
