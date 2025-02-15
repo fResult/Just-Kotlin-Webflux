@@ -47,10 +47,10 @@ class HypermediaController(
   fun employee(@PathVariable id: Long): Mono<EntityModel<Employee>> {
     val selfLinkMono = linkTo(methodOn(this::class.java).employee(id)).withSelfRel().toMono()
     val aggregateRootLinkMono = linkTo(methodOn(this::class.java).employees()).withRel("employees").toMono()
-    val linksMono = Mono.zip(selfLinkMono, aggregateRootLinkMono)
+    val linksMono = Mono.zip(selfLinkMono, aggregateRootLinkMono) { self, aggregateRoot -> self to aggregateRoot }
 
-    return linksMono.map { links ->
-      database[id]?.let { employee -> EntityModel.of(employee, links.t1, links.t2) }
+    return linksMono.map { linksPair ->
+      database[id]?.let { employee -> EntityModel.of(employee, linksPair.first, linksPair.second) }
     }
   }
 }
