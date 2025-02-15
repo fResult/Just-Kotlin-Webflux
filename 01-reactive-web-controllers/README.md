@@ -21,3 +21,15 @@ curl --location 'localhost:8080/api/employees' \
       "role": "Hacker & The One"
     }'
 ```
+
+### GET `/hypermedia/employees`
+
+```bash
+curl localhost:8080/hypermedia/employees
+```
+
+### GET `/hypermedia/employees/:id`
+
+```bash
+curl localhost:8080/hypermedia/employees/<id>
+```
