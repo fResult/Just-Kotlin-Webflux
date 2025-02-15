@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+  implementation(libs.spring.boot.starter.hateoas)
   implementation(libs.spring.boot.starter.thymeleaf)
   implementation(libs.spring.boot.starter.webflux)
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
