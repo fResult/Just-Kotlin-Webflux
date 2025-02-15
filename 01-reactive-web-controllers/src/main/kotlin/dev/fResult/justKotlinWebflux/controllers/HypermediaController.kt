@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong
  * In a real application, it may be preferable to put it in the same class that has the `@SpringBootApplication` annotation.
  */
 @RestController
-@RequestMapping("/hypermedia")
+@RequestMapping("/hypermedia/employees")
 @EnableHypermediaSupport(type = [HypermediaType.HAL])
 class HypermediaController(
   private val database: MutableMap<Long, Employee> = mutableMapOf(
@@ -33,7 +33,7 @@ class HypermediaController(
   ),
   private val idGenerator: AtomicLong = AtomicLong(database.size.toLong())
 ) {
-  @GetMapping("/employees")
+  @GetMapping
   fun employees(): Mono<CollectionModel<EntityModel<Employee>>> {
     val selfLinkMono = linkTo(methodOn(this::class.java).employees()).withSelfRel().toMono()
 
@@ -43,7 +43,7 @@ class HypermediaController(
     }
   }
 
-  @GetMapping("/employees/{id}")
+  @GetMapping("/{id}")
   fun employee(@PathVariable id: Long): Mono<EntityModel<Employee>> {
     val selfLinkMono = linkTo(methodOn(this::class.java).employee(id)).withSelfRel().toMono()
     val aggregateRootLinkMono = linkTo(methodOn(this::class.java).employees()).withRel("employees").toMono()
