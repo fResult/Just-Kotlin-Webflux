@@ -37,10 +37,7 @@ class HypermediaController(
   fun allEmployees(): Mono<CollectionModel<EntityModel<Employee>>> {
     val selfLinkMono = linkTo(methodOn(this::class.java).allEmployees()).withSelfRel().toMono()
 
-    return selfLinkMono.flatMap { selfLink ->
-      Flux.fromIterable(database.keys).flatMap(::employeeById).collectList()
-        .map { entityModels -> CollectionModel.of(entityModels, selfLink) }
-    }
+    return selfLinkMono.flatMap(::toEmployeeEntityModelCollectionMono)
   }
 
   @GetMapping("/{id}")
@@ -50,6 +47,15 @@ class HypermediaController(
     val linksMono = Mono.zip(selfLinkMono, aggregateRootLinkMono) { self, aggregateRoot -> self to aggregateRoot }
 
     return linksMono.flatMap(toEmployeeEntityModelMono(id))
+  }
+
+  private fun toEmployeeEntityModelCollectionMono(link: Link): Mono<CollectionModel<EntityModel<Employee>>> {
+    val toEntityModelCollection: (List<EntityModel<Employee>>) -> CollectionModel<EntityModel<Employee>> =
+      { entityModels -> CollectionModel.of(entityModels, link) }
+
+    return Flux.fromIterable(database.keys)
+      .flatMap(::employeeById).collectList()
+      .map(toEntityModelCollection)
   }
 
   private fun toEmployeeEntityModelMono(id: Long): (Pair<Link, Link>) -> Mono<EntityModel<Employee>> = { linksPair ->
