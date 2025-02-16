@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -49,8 +51,10 @@ class HypermediaController(
     val aggregateRootLinkMono = linkTo(methodOn(this::class.java).employees()).withRel("employees").toMono()
     val linksMono = Mono.zip(selfLinkMono, aggregateRootLinkMono) { self, aggregateRoot -> self to aggregateRoot }
 
-    return linksMono.map { linksPair ->
-      database[id]?.let { employee -> EntityModel.of(employee, linksPair.first, linksPair.second) }
+    return linksMono.flatMap { linksPair ->
+      database[id]?.let { employee ->
+        Mono.just(EntityModel.of(employee, linksPair.first, linksPair.second))
+      } ?: Mono.error(ResponseStatusException(HttpStatus.NOT_FOUND, "Employee with ID $id not found"))
     }
   }
 }
