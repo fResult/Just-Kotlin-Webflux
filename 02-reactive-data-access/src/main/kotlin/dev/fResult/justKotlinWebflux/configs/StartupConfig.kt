@@ -1,5 +1,6 @@
 package dev.fResult.justKotlinWebflux.configs
 
+import dev.fResult.justKotlinWebflux.entities.Employee
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,6 +19,24 @@ class StartupConfig {
       )
         .fetch()
         .rowsUpdated()
+        .`as`(StepVerifier::create)
+        .expectNextCount(1)
+        .verifyComplete()
+
+      template.insert(Employee::class.java)
+        .using(Employee("John Wick", "Assassin"))
+        .`as`(StepVerifier::create)
+        .expectNextCount(1)
+        .verifyComplete()
+
+      template.insert(Employee::class.java)
+        .using(Employee("John Constantine", "Exorcist"))
+        .`as`(StepVerifier::create)
+        .expectNextCount(1)
+        .verifyComplete()
+
+      template.insert(Employee::class.java)
+        .using(Employee("Johnny Mnemonic", "Data Courier"))
         .`as`(StepVerifier::create)
         .expectNextCount(1)
         .verifyComplete()
