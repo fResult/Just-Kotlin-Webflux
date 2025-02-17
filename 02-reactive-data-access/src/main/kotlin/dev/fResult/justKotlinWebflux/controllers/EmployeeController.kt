@@ -23,7 +23,8 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
     .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
 
   @PostMapping
-  fun create(body: Mono<Employee>): Mono<ResponseEntity<Employee>> =
-    body.doOnNext(employeeRepository::save)
+  fun create(@RequestBody body: Employee): Mono<ResponseEntity<Employee>> =
+    // NOTE: This is working around because the body is not deserialized using Mono<Employee> in Kotlin (but Java works)
+    Mono.just(body).flatMap(employeeRepository::save)
       .map { ResponseEntity.created(URI.create("/api/employees/${it.id}")).body(it) }
 }
