@@ -49,6 +49,17 @@ class HypermediaController(
     return linksMono.flatMap(toEmployeeEntityModelMono(id))
   }
 
+  @PostMapping
+  fun create(@RequestBody newEmployee: Employee): Mono<EntityModel<Employee>> {
+    val id = idGenerator.incrementAndGet()
+    val selfLinkMono = linkTo(methodOn(this::class.java).employeeById(id)).withSelfRel().toMono()
+
+    // NOTE: This is working around because the body is not deserialized using Mono<Employee> in Kotlin (but Java works)
+    return Mono.just(newEmployee).map { it.copy(id = id) }
+      .doOnNext { database[id] = it }
+      .flatMap { employee -> selfLinkMono.map { EntityModel.of(employee, it) } }
+  }
+
   private fun toEmployeeEntityModelCollectionMono(link: Link): Mono<CollectionModel<EntityModel<Employee>>> {
     val toEntityModelCollection: (List<EntityModel<Employee>>) -> CollectionModel<EntityModel<Employee>> =
       { entityModels -> CollectionModel.of(entityModels, link) }

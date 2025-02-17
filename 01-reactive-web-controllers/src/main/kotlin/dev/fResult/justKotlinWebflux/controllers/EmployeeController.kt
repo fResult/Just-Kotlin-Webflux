@@ -23,9 +23,10 @@ class EmployeeController(
   }
 
   @PostMapping
-  fun newEmployee(@RequestBody newEmployee: Mono<Employee>): Mono<Employee> {
+  fun newEmployee(@RequestBody newEmployee: Employee): Mono<Employee> {
     val id = idGenerator.incrementAndGet()
 
-    return newEmployee.map { it.copy(id = id) }.doOnNext { database[id] = it }
+    // NOTE: This is working around because the body is not deserialized using Mono<Employee> in Kotlin (but Java works)
+    return Mono.just(newEmployee).map { it.copy(id = id) }.doOnNext { database[id] = it }
   }
 }
