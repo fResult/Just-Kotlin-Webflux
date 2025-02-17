@@ -2,6 +2,7 @@
 springboot = "3.4.2"
 
 [libraries]
+spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc", version.ref = "springboot" }
 spring-boot-starter-hateoas = { module = "org.springframework.boot:spring-boot-starter-hateoas", version.ref = "springboot" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springboot" }
 spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "springboot" }
