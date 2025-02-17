@@ -13,7 +13,7 @@ class StartupConfig {
   fun initEmployees(template: R2dbcEntityTemplate): CommandLineRunner {
     return CommandLineRunner { _ ->
       template.databaseClient.sql(
-        /* SQL */ """
+        """
         CREATE TABLE IF NOT EXISTS employees (
           id IDENTITY NOT NULL PRIMARY KEY,
           name VARCHAR(255),

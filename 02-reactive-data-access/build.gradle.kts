@@ -28,6 +28,7 @@ dependencies {
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+  implementation("io.projectreactor:reactor-test")
 
   developmentOnly(libs.spring.boot.devtools)
 
@@ -35,7 +36,6 @@ dependencies {
   runtimeOnly("io.r2dbc:r2dbc-h2")
 
   testImplementation(libs.spring.boot.starter.test)
-  testImplementation("io.projectreactor:reactor-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
