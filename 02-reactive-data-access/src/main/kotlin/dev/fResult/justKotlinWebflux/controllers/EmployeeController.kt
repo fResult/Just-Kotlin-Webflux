@@ -3,12 +3,10 @@ package dev.fResult.justKotlinWebflux.controllers
 import dev.fResult.justKotlinWebflux.entities.Employee
 import dev.fResult.justKotlinWebflux.repositories.EmployeeRepository
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
+import java.net.URI
 
 @RestController
 @RequestMapping("/api/employees")
@@ -23,4 +21,9 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
       ResponseEntity.ok(it)
     }
     .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
+
+  @PostMapping
+  fun create(body: Mono<Employee>): Mono<ResponseEntity<Employee>> =
+    body.doOnNext(employeeRepository::save)
+      .map { ResponseEntity.created(URI.create("/api/employees/${it.id}")).body(it) }
 }
