@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: Just Kotlin Webflux
+
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
