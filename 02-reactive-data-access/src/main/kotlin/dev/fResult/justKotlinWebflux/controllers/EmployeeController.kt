@@ -42,4 +42,10 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
       }
       .map { ResponseEntity.ok(it) }
       .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
+
+  @DeleteMapping("/{id}")
+  fun delete(@PathVariable id: Long): Mono<ResponseEntity<Void>> =
+    employeeRepository.deleteById(id)
+      .map { ResponseEntity.noContent().build<Void>() }
+      .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
 }
