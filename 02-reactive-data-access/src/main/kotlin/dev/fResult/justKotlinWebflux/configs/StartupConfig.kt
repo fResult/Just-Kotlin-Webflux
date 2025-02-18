@@ -26,23 +26,18 @@ class StartupConfig {
         .expectNextCount(1)
         .verifyComplete()
 
-      template.insert(Employee::class.java)
-        .using(Employee("John Wick", "Assassin"))
-        .`as`(StepVerifier::create)
-        .expectNextCount(1)
-        .verifyComplete()
-
-      template.insert(Employee::class.java)
-        .using(Employee("John Constantine", "Exorcist"))
-        .`as`(StepVerifier::create)
-        .expectNextCount(1)
-        .verifyComplete()
-
-      template.insert(Employee::class.java)
-        .using(Employee("Johnny Mnemonic", "Data Courier"))
-        .`as`(StepVerifier::create)
-        .expectNextCount(1)
-        .verifyComplete()
+      val insertEmployeeToTable = insertEmployee(template)
+      insertEmployeeToTable(Employee("John Wick", "Assassin"))
+      insertEmployeeToTable(Employee("John Constantine", "Exorcist"))
+      insertEmployeeToTable(Employee("Johnny Mnemonic", "Data Courier"))
     }
+  }
+
+  private fun insertEmployee(template: R2dbcEntityTemplate): (Employee) -> Unit = { employee ->
+    template.insert(Employee::class.java)
+      .using(employee)
+      .`as`(StepVerifier::create)
+      .expectNextCount(1)
+      .verifyComplete()
   }
 }

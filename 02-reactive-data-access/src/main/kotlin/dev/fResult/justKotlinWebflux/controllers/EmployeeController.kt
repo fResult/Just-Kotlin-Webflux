@@ -18,10 +18,8 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
 
   @GetMapping("/{id}")
   fun byId(@PathVariable id: Long): Mono<ResponseEntity<Employee>> = employeeRepository.findById(id)
-    .map {
-      ResponseEntity.ok(it)
-    }
-    .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
+    .map { ResponseEntity.ok(it) }
+    .switchIfEmpty(::toResponseNotFoundMono)
 
   @PostMapping
   fun create(@RequestBody body: Employee): Mono<ResponseEntity<Employee>> =
@@ -41,11 +39,15 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
         employeeRepository.save(employeeToUpdate)
       }
       .map { ResponseEntity.ok(it) }
-      .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
+      .switchIfEmpty(::toResponseNotFoundMono)
 
   @DeleteMapping("/{id}")
   fun delete(@PathVariable id: Long): Mono<ResponseEntity<Void>> =
     employeeRepository.deleteById(id)
       .map { ResponseEntity.noContent().build<Void>() }
-      .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
+      .switchIfEmpty(::toResponseNotFoundMono)
+
+  private fun <T> toResponseNotFoundMono(): Mono<ResponseEntity<T>> {
+    return Mono.just(ResponseEntity.notFound().build())
+  }
 }
