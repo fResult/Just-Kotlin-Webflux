@@ -1,5 +1,6 @@
 package dev.fResult.justKotlinWebflux.controllers
 
+import dev.fResult.justKotlinWebflux.dtos.EmployeeUpdateRequest
 import dev.fResult.justKotlinWebflux.entities.Employee
 import dev.fResult.justKotlinWebflux.repositories.EmployeeRepository
 import org.springframework.http.ResponseEntity
@@ -27,4 +28,18 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
     // NOTE: This is working around because the body is not deserialized using Mono<Employee> in Kotlin (but Java works)
     Mono.just(body).flatMap(employeeRepository::save)
       .map { ResponseEntity.created(URI.create("/api/employees/${it.id}")).body(it) }
+
+  @PatchMapping("/{id}")
+  fun update(@PathVariable id: Long, @RequestBody body: EmployeeUpdateRequest): Mono<ResponseEntity<Employee>> =
+    employeeRepository.findById(id)
+      .flatMap {
+        val employeeToUpdate = Employee(
+          it.id,
+          body.name ?: it.name,
+          body.role ?: it.role
+        )
+        employeeRepository.save(employeeToUpdate)
+      }
+      .map { ResponseEntity.ok(it) }
+      .switchIfEmpty { Mono.just(ResponseEntity.notFound().build()) }
 }
