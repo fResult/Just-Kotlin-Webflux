@@ -14,3 +14,11 @@ book [Learning Spring Boot 3.0](https://github.com/fResult/Learning-Spring-Boot-
 ```
 
 API Usages, please see [here](01-reactive-web-controllers/README.md)
+
+### For `02-reactive-data-access` module
+
+**To start the *02-reactive-data-access* project, you can run:**
+
+```bash
+./gradlew :02-reactive-data-access:bootRun
+```
